@@ -1,0 +1,25 @@
+---
+
+- hosts: localhost
+  vars:
+    nios_provider:
+      host: 10.60.27.4
+      username: admin
+      password: infoblox
+
+  connection: local
+  tasks:
+   - name: create host record
+     nios_host_record:
+       name: host.ansiblezone.com
+       view: ansibleDnsView
+       ipv4addrs: 
+         - ipv4addr: "{{ lookup('nios_next_ip', '10.0.0.0/24', provider=nios_provider)[0] }}"
+       ipv6addrs:
+         - ipv6addr: fd00::2
+       ttl: 3600
+       extattrs:
+         Site: Test Site
+       comment: Created with Ansible
+       state: present
+       provider: "{{ nios_provider }}"
