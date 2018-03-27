@@ -1,0 +1,32 @@
+---
+
+- hosts: localhost
+  vars:
+    nios_provider:
+      host: 10.60.27.4
+      username: admin
+      password: infoblox
+
+  connection: local
+  tasks:
+# Get the first IPv4 address from the host record "a1.test.com"
+   - name: fetch host IP
+     set_fact:
+       host: "{{ lookup('nios', 'record:host', filter={'name': 'a1.test.com'}, provider=nios_provider) }}"
+   - name: display host IP
+     debug:
+       msg: "{{ host.ipv4addrs[0].ipv4addr }}"
+# Get the first IPv4 address from a host record in a specific DNS view
+   - name: fetch host from view
+     set_fact:
+       host: "{{ lookup('nios', 'record:host', filter={'name': 'host.ansiblezone.com', 'view': 'ansibleDnsView'}, provider=nios_provider) }}"
+   - name: display host IP
+     debug:
+       msg: "{{ host.ipv4addrs[0].ipv4addr }}"
+# Get the list of grid members
+   - name: get member list
+     set_fact:
+       members: "{{ lookup('nios', 'member', provider=nios_provider) }}"
+   - name: display capacity report
+     debug:
+       msg: "{{ members }}"
