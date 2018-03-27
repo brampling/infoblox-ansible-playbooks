@@ -9,9 +9,10 @@
 
   connection: local
   tasks:
-   - name: create network view
-     nios_network_view:
-       name: ansibleNetView
+   - name: create DNS view
+     nios_dns_view:
+       name: ansibleDnsView
+       network_view: ansibleNetView
        extattrs:
          Site: Test Site
        comment: Created with Ansible
